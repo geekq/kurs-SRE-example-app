@@ -90,7 +90,7 @@ func main() {
 	})))
 
 	http.Handle("/metrics", logAndMeasureRequest(shopRequestDuration, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		randomDelay := time.Duration(rand.Intn(1000)) * time.Millisecond // Random delay between 0 and 300ms
+		randomDelay := time.Duration(rand.NormFloat64()*1000/(speed+0.1)) * time.Millisecond
 		time.Sleep(randomDelay)
 		promhttp.Handler().ServeHTTP(w, r)
 	})))
