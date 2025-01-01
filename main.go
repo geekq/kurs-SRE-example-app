@@ -89,7 +89,11 @@ func main() {
 		w.Write([]byte(fmt.Sprintf("Decreased speed to %.2f", speed)))
 	})))
 
-	http.Handle("/metrics", logAndMeasureRequest(shopRequestDuration, promhttp.Handler()))
+	http.Handle("/metrics", logAndMeasureRequest(shopRequestDuration, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		randomDelay := time.Duration(rand.Intn(1000)) * time.Millisecond // Random delay between 0 and 300ms
+		time.Sleep(randomDelay)
+		promhttp.Handler().ServeHTTP(w, r)
+	})))
 
 	// Start HTTP server
 	log.Println("Starting server on :8080")
